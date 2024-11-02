@@ -19,10 +19,16 @@ namespace E_Restaurant.Implementation
         {
             var item = new Review
             {
-                MenuItemId = reviewDto.MenuItemId,
+
                 Rating = reviewDto.Rating,
                 Comment = reviewDto.Comment,
-                ReviewDate = reviewDto.ReviewDate
+                ReviewDate = reviewDto.ReviewDate,
+                MenuItemId = reviewDto.MenuItemId,
+                CustomerId = reviewDto.CustomerId,
+                Id = reviewDto.Id,
+                Name = reviewDto.Name,
+                IsActive = reviewDto.IsActive,
+                CreationDate = reviewDto.CreationDate,
             };
             if (item != null)
             {

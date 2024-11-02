@@ -2,6 +2,7 @@
 using E_Restaurant.DTOs.MenuDTO.Response;
 using E_Restaurant.DTOs.OrderDTO.Request;
 using E_Restaurant.DTOs.OrderDTO.Response;
+using E_Restaurant.DTOs.ReviewDTO.Response;
 using E_Restaurant.Entities;
 using E_Restaurant.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -40,8 +41,14 @@ namespace E_Restaurant.Implementation
             var order = new Order
             {
                 MenuItemIds = menuItems.Select(m => m.Id).ToList(),
+                CustomerId = orderDto.UserId,
+                TotalPrice = totalAmount,
+                Status = orderDto.Status,
+                Id = orderDto.Id,
+                Name = orderDto.Name,
+                IsActive = orderDto.IsActive,
                 CreationDate = DateTime.Now,
-                CustomerId = orderDto.UserId
+
             };
 
             _context.Orders.Add(order);
