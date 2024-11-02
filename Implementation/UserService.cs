@@ -23,7 +23,7 @@ namespace E_Restaurant.Implementation
             var existingUser = await _context.Persons.FirstOrDefaultAsync(u => u.Email == userDto.Email);
             if (existingUser != null)
             {
-                return null;
+                return null; 
             }
 
             // Encrypt the password
@@ -38,6 +38,7 @@ namespace E_Restaurant.Implementation
                 Role = userDto.Role
             };
 
+            // Add the user to the context
             _context.Persons.Add(user);
             await _context.SaveChangesAsync();
 
@@ -97,9 +98,15 @@ namespace E_Restaurant.Implementation
                 user.Name = userDto.Username;
                 user.Email = userDto.Email;
 
+
                 _context.Persons.Update(user);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        private string HashPassword(string password)
+        {
+            return password; 
         }
     }
 }
