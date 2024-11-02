@@ -12,9 +12,7 @@ namespace E_Restaurant.EntityCongigurations
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
             builder.Property(c => c.Description).HasMaxLength(500);
-            builder.HasOne<Menu>()
-                   .WithMany()
-                   .HasForeignKey(c => c.MenuId);
+
         }
     }
 }

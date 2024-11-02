@@ -35,7 +35,10 @@ namespace E_Restaurant.Implementation
                 Name = userDto.Username,
                 Email = userDto.Email,
                 Password = encryptedPassword,
-                Role = userDto.Role
+                Role = userDto.Role,
+                PhoneNumber = userDto.PhoneNumber,
+                CreationDate = DateTime.UtcNow,  // Add if needed
+                IsActive = true
             };
 
             // Add the user to the context

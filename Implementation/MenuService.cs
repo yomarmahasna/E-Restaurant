@@ -19,7 +19,7 @@ namespace E_Restaurant.Implementation
 
             public async Task<List<MenuItemDTO>> GetMenuItemsAsync()
             {
-                var response = from item in _context.Menus
+                var response = from item in _context.MenuItems
                                select new MenuItemDTO()
                                {
                                    Id = item.Id,
@@ -33,7 +33,7 @@ namespace E_Restaurant.Implementation
 
             public async Task<MenuItemDTO> GetMenuItemByIdAsync(int id)
             {
-                return await _context.Menus
+                return await _context.MenuItems
                     .Where(item => item.Id == id)
                     .Select(item => new MenuItemDTO
                     {
@@ -52,8 +52,7 @@ namespace E_Restaurant.Implementation
                 {
                     Name = itemDto.Name,
                     Description = itemDto.Description,
-                    Price = itemDto.Price,
-                    Stock = itemDto.Stock
+
                 };
             if (item != null)
             {
@@ -62,7 +61,8 @@ namespace E_Restaurant.Implementation
             }
             }
 
-            public async Task UpdateMenuItemAsync(UpdateMenuItemDTO itemDto)
+
+        public async Task UpdateMenuItemAsync(UpdateMenuItemDTO itemDto)
             {
                 var item = await _context.Menus
                     .Where(m => m.Id == itemDto.Id)
@@ -104,7 +104,7 @@ namespace E_Restaurant.Implementation
 
             public async Task UpdateStockAsync(int itemId, int quantity)
             {
-                var item = await _context.Menus
+                var item = await _context.MenuItems
                     .Where(m => m.Id == itemId)
                     .Select(m => new MenuItem { Id = m.Id, Stock = m.Stock })
                     .FirstOrDefaultAsync();

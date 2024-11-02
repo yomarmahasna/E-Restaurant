@@ -20,6 +20,7 @@ namespace E_Restaurant.Context
         public DbSet<Payment> Payments { get; set; }
         public DbSet<LookupType> LookupTypes { get; set; }
         public DbSet<LookupItem> LookupItems { get; set; }
+        public DbSet<MenuCategory> MenuCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +53,7 @@ namespace E_Restaurant.Context
                 // User Roles Lookup Items
                 new LookupItem { Id = 10, Name = "Admin", IsActive = true, CreationDate = DateTime.Now, LookupTypeId = 4 },
                 new LookupItem { Id = 11, Name = "Customer", IsActive = true, CreationDate = DateTime.Now, LookupTypeId = 4 });
+
             modelBuilder.Entity<Person>().HasData(
     new Person
     {
@@ -62,6 +64,7 @@ namespace E_Restaurant.Context
         Role = 10,
         Password = "omar1234"
     });
+
             modelBuilder.ApplyConfiguration(new MenuConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new MenuItemConfiguration());
@@ -73,6 +76,46 @@ namespace E_Restaurant.Context
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());
             modelBuilder.ApplyConfiguration(new LookupTypeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LookupItemEntityTypeConfiguration());
+
+
+
+            // Seed Categories
+            modelBuilder.Entity<Category>().HasData(
+        new Category { Id = 1, Name = "Appetizers", IsActive = true, CreationDate = DateTime.Now, Description = "Starters or small dishes served before the main course." },
+        new Category { Id = 2, Name = "Main Course", IsActive = true, CreationDate = DateTime.Now, Description = "The main part of a meal." },
+        new Category { Id = 3, Name = "Desserts", IsActive = true, CreationDate = DateTime.Now, Description = "Sweet dishes served at the end of a meal." }
+            );
+
+            // Seed Menus
+            modelBuilder.Entity<Menu>().HasData(
+                new Menu { Id = 1, Title = "Lunch Special",  Name = "Lunch Special", Description = "A delicious midday meal", CreationDate = DateTime.Now },
+                new Menu { Id = 2, Title = "Dinner Feast", Name = "Dinner Feast", Description = "Hearty evening meal", CreationDate = DateTime.Now }
+            );
+
+            // Configure Many-to-Many Relationship without cascading deletes
+            modelBuilder.Entity<MenuCategory>()
+                .HasKey(mc => new { mc.MenuId, mc.CategoryId });
+
+            modelBuilder.Entity<MenuCategory>()
+                .HasOne(mc => mc.Menu)
+                .WithMany(m => m.MenuCategories)
+                .HasForeignKey(mc => mc.MenuId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete
+
+            modelBuilder.Entity<MenuCategory>()
+                .HasOne(mc => mc.Category)
+                .WithMany(c => c.MenuCategories)
+                .HasForeignKey(mc => mc.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete
+
+            modelBuilder.Entity<MenuCategory>().HasData(
+                new MenuCategory { MenuId = 1, CategoryId = 1 },
+                new MenuCategory { MenuId = 1, CategoryId = 2 },
+                new MenuCategory { MenuId = 2, CategoryId = 2 },
+                new MenuCategory { MenuId = 2, CategoryId = 3 }
+            );
         }
+
     }
+    
 }

@@ -3,6 +3,7 @@
     public class Category : MainEntity
     {
         public string Description { get; set; }
-        public int MenuId { get; set; }
+        public ICollection<MenuCategory> MenuCategories { get; set; } = new List<MenuCategory>();
+
     }
 }

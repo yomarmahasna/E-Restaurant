@@ -34,7 +34,7 @@ namespace E_Restaurant.Implementation
 
         public async Task PlaceOrderAsync(CreateOrderDTO orderDto)
         {
-            var menuItems = await _context.Menus.Where(m => orderDto.MenuItemIds.Contains(m.Id)).ToListAsync();
+            var menuItems = await _context.MenuItems.Where(m => orderDto.MenuItemIds.Contains(m.Id)).ToListAsync();
             var totalAmount = menuItems.Sum(m => m.Price);
 
             var order = new Order
