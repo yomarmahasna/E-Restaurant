@@ -17,14 +17,31 @@ namespace E_Restaurant.Controllers
         private readonly IMenuService _menuService;
 
 
-        public RestaurantController(IOrderService orderService, IReviewService reviewService, IUserService userService, IMenuService menuService)
+        public RestaurantController(IOrderService orderService, IReviewService reviewService,  IMenuService menuService)
         {
             _orderService = orderService;
             _reviewService = reviewService;
-            _userService = userService;
             _menuService = menuService;
         }
         // Menu Endpoints
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> GetMenu()
+        {
+            Log.Information("Operation of Get Menu  Has Been Started");
+            try
+            {
+                var responses = await _menuService.GetMenuAsync();
+                Log.Information($"Menu Items Returned: {responses.Count} from DB");
+                return responses.Count > 0 ? Ok(responses) : StatusCode(204, "No Available Menu ");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("An Error Was Occurred When Getting Menu Items");
+                Log.Error(ex.ToString());
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetMenuItems()
@@ -242,91 +259,5 @@ namespace E_Restaurant.Controllers
             }
         }
 
-        // User Endpoints
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO userDto)
-        {
-            Log.Information("Operation of Register User Has Been Started");
-            try
-            {
-                var user = await _userService.RegisterUserAsync(userDto);
-                Log.Information("User Registered Successfully");
-                return StatusCode(201, "User Registered Successfully");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Registering the User");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserDTO userDto)
-        {
-            Log.Information("Operation of Authenticate User Has Been Started");
-            try
-            {
-                var user = await _userService.AuthenticateUserAsync(userDto);
-                if (user == null)
-                {
-                    Log.Warning("Authentication Failed: User not found");
-                    return Unauthorized();
-                }
-                Log.Information("User Authenticated Successfully");
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Authenticating the User");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        [HttpGet]
-        [Route("[action]/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
-        {
-            Log.Information("Operation of Get User by ID Has Been Started");
-            try
-            {
-                var user = await _userService.GetUserByIdAsync(id);
-                if (user == null)
-                {
-                    Log.Warning($"User with ID {id} not found");
-                    return NotFound();
-                }
-                Log.Information("User Retrieved Successfully");
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Getting User by ID");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        [HttpPut]
-        [Route("[action]")]
-        public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDto)
-        {
-            Log.Information("Operation of Update User Has Been Started");
-            try
-            {
-                await _userService.UpdateUserAsync(userDto);
-                Log.Information("User Updated Successfully");
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Updating the User");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
     }
 }

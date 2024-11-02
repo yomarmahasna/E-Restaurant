@@ -116,7 +116,22 @@ namespace E_Restaurant.Implementation
                     await _context.SaveChangesAsync();
                 }
             }
+
+        public async Task<List<MenuDTO>> GetMenuAsync()
+        {
+            var response = from item in _context.Menus
+                           select new MenuDTO()
+                           {
+                               Id = item.Id,
+                               Title = item.Title,
+                               Description = item.Description,
+                               CreationDate = item.CreationDate,
+                               CategoryIds = item.MenuCategories.Select(mc => mc.CategoryId).ToList() 
+                           };
+                
+            return await response.ToListAsync();
         }
+    }
 
     }
 

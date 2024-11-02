@@ -5,6 +5,7 @@ namespace E_Restaurant.Interfaces
 {
     public interface IMenuService
     {
+        Task<List<MenuDTO>> GetMenuAsync();
         Task<List<MenuItemDTO>> GetMenuItemsAsync();
         Task<MenuItemDTO> GetMenuItemByIdAsync(int id);
         Task AddMenuItemAsync(CreateMenuItemDTO itemDto);
