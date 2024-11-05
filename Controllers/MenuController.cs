@@ -1,42 +1,33 @@
 ﻿using E_Restaurant.DTOs.MenuDTO.Request;
-using E_Restaurant.DTOs.OrderDTO.Request;
-using E_Restaurant.DTOs.ReviewDTO.Request;
-using E_Restaurant.DTOs.UserDTO.Request;
-using E_Restaurant.DTOs.UserDTO.Response;
 using E_Restaurant.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace E_Restaurant.Controllers
 {
-    public class RestaurantController : ControllerBase
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MenuController : ControllerBase
     {
-        private readonly IOrderService _orderService;
-        private readonly IReviewService _reviewService;
-        private readonly IUserService _userService;
+        
         private readonly IMenuService _menuService;
-        private readonly ICartService _cartService;
 
-
-
-        public RestaurantController(IOrderService orderService, IReviewService reviewService,  IMenuService menuService , ICartService cartService)
+        public MenuController(IMenuService menuService)
         {
-            _orderService = orderService;
-            _reviewService = reviewService;
             _menuService = menuService;
-            _cartService = cartService;
         }
+
         // Menu Endpoints
-        [HttpGet]
-        [Route("[action]")]
+        [HttpGet("[action]")]
         public async Task<IActionResult> GetMenu()
         {
-            Log.Information("Operation of Get Menu  Has Been Started");
+            Log.Information("Operation of Get Menu Has Been Started");
             try
             {
                 var responses = await _menuService.GetMenuAsync();
                 Log.Information($"Menu Items Returned: {responses.Count} from DB");
-                return responses.Count > 0 ? Ok(responses) : StatusCode(204, "No Available Menu ");
+                return responses.Count > 0 ? Ok(responses) : StatusCode(204, "No Available Menu");
             }
             catch (Exception ex)
             {
@@ -45,8 +36,9 @@ namespace E_Restaurant.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
-        [HttpGet]
-        [Route("[action]")]
+
+
+        [HttpGet("[action]")]
         public async Task<IActionResult> GetMenuItems()
         {
             Log.Information("Operation of Get Menu Items Has Been Started");
@@ -64,8 +56,7 @@ namespace E_Restaurant.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("[action]/{id}")]
+        [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetMenuItemById(int id)
         {
             Log.Information("Operation of Get Menu Item by ID Has Been Started");
@@ -89,9 +80,7 @@ namespace E_Restaurant.Controllers
         }
 
 
-
-        [HttpPost]
-        [Route("[action]")]
+        [HttpPost("[action]")]
         public async Task<IActionResult> AddMenuItem([FromBody] CreateMenuItemDTO itemDto)
         {
             Log.Information("Operation of Add Menu Item Has Been Started");
@@ -109,8 +98,8 @@ namespace E_Restaurant.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("[action]")]
+ 
+        [HttpPut("[action]")]
         public async Task<IActionResult> UpdateMenuItem([FromBody] UpdateMenuItemDTO itemDto)
         {
             Log.Information("Operation of Update Menu Item Has Been Started");
@@ -127,9 +116,8 @@ namespace E_Restaurant.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
-
-        [HttpDelete]
-        [Route("[action]/{id}")]
+ 
+        [HttpDelete("[action]/{id}")]
         public async Task<IActionResult> DeleteMenuItem(int id)
         {
             Log.Information("Operation of Delete Menu Item Has Been Started");
@@ -146,9 +134,8 @@ namespace E_Restaurant.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
-
-        [HttpPut]
-        [Route("[action]")]
+ 
+        [HttpPut("[action]")]
         public async Task<IActionResult> UpdateStock([FromQuery] int itemId, [FromQuery] int quantity)
         {
             Log.Information("Operation of Update Stock Has Been Started");
@@ -165,102 +152,6 @@ namespace E_Restaurant.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
-        // Order Endpoints
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderDTO orderDto)
-        {
-            Log.Information("Operation of Place Order Has Been Started");
-            try
-            {
-                await _orderService.PlaceOrderAsync(orderDto);
-                Log.Information("Order Placed Successfully");
-                return StatusCode(201, "Order Placed Successfully");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Placing the Order");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> GetOrders()
-        {
-            Log.Information("Operation of Get Orders Has Been Started");
-            try
-            {
-                var responses = await _orderService.GetOrdersAsync();
-                Log.Information($"Orders Returned: {responses.Count} from DB");
-                return responses.Count > 0 ? Ok(responses) : StatusCode(204, "No Available Orders");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Getting Orders");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        [HttpDelete]
-        [Route("[action]/{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            Log.Information("Operation of Delete Order Has Been Started");
-            try
-            {
-                await _orderService.DeleteOrderAsync(id);
-                Log.Information($"Order with ID {id} Deleted Successfully");
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Deleting the Order");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        // Review Endpoints
-        [HttpGet]
-        [Route("[action]/{itemId}")]
-        public async Task<IActionResult> GetReviewsForItem(int itemId)
-        {
-            Log.Information("Operation of Get Reviews for Item Has Been Started");
-            try
-            {
-                var responses = await _reviewService.GetReviewsForItemAsync(itemId);
-                Log.Information($"Reviews Returned: {responses.Count} from DB");
-                return responses.Count > 0 ? Ok(responses) : StatusCode(204, "No Available Reviews for this Item");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Getting Reviews for Item");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<IActionResult> AddReview([FromBody] CreateReviewDTO reviewDto)
-        {
-            Log.Information("Operation of Add Review Has Been Started");
-            try
-            {
-                await _reviewService.AddReviewAsync(reviewDto);
-                Log.Information("Review Added Successfully");
-                return StatusCode(201, "Review Added Successfully");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An Error Was Occurred When Adding the Review");
-                Log.Error(ex.ToString());
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
-        }
-
     }
 }
+

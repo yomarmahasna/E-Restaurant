@@ -87,22 +87,7 @@ namespace E_Restaurant.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("Update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDto)
-        {
-            Log.Information("Starting user update process...");
-            try
-            {
-                await _userService.UpdateUserAsync(userDto);
-                Log.Information("User updated successfully.");
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An error occurred during user update.", ex);
-                return StatusCode(500, $"Error: {ex.Message}");
-            }
+
         }
     }
-}
+

@@ -22,6 +22,7 @@ namespace E_Restaurant.Context
         public DbSet<LookupItem> LookupItems { get; set; }
         public DbSet<MenuCategory> MenuCategories { get; set; }
 
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -79,8 +80,9 @@ namespace E_Restaurant.Context
 
 
 
-            // Seed Categories
-            modelBuilder.Entity<Category>().HasData(
+
+        // Seed Categories
+        modelBuilder.Entity<Category>().HasData(
         new Category { Id = 1, Name = "Appetizers", IsActive = true, CreationDate = DateTime.Now, Description = "Starters or small dishes served before the main course." },
         new Category { Id = 2, Name = "Main Course", IsActive = true, CreationDate = DateTime.Now, Description = "The main part of a meal." },
         new Category { Id = 3, Name = "Desserts", IsActive = true, CreationDate = DateTime.Now, Description = "Sweet dishes served at the end of a meal." }
@@ -114,6 +116,11 @@ namespace E_Restaurant.Context
                 new MenuCategory { MenuId = 2, CategoryId = 2 },
                 new MenuCategory { MenuId = 2, CategoryId = 3 }
             );
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-G6TNHE4\\SQLEXPRESS;Initial Catalog=ERestaurant;Integrated Security=True;Trust Server Certificate=True")
+                          .EnableSensitiveDataLogging();
         }
 
     }

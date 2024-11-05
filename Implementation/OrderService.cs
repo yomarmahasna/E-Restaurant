@@ -44,7 +44,6 @@ namespace E_Restaurant.Implementation
                 CustomerId = orderDto.UserId,
                 TotalPrice = totalAmount,
                 Status = orderDto.Status,
-                Id = orderDto.Id,
                 Name = orderDto.Name,
                 IsActive = orderDto.IsActive,
                 CreationDate = DateTime.Now,
